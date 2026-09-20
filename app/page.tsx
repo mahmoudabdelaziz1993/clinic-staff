@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { getDoctors } from "@/actions/doctors"
+import { CreateAppointmentForm } from "@/components/appointments/create-appointment-form";
+import { createAppointmentAction } from "@/actions/appointments";
 
 export default async function Page() {
   const doctors = await getDoctors();
@@ -11,10 +13,13 @@ export default async function Page() {
           <p>You may now add components and start building.</p>
           <ul>
             {doctors.map((doctor) => (
-              <li key={doctor.id}>{doctor.name}-{doctor.specialty}</li>
+              <li key={doctor.id}> {doctor.id}. {doctor.name}-{doctor.specialty}</li>
             ))}
           </ul>
           <p>We&apos;ve already added the button component for you.</p>
+
+
+
           <Button className="mt-2">Button</Button>
         </div>
         <div className="font-mono text-xs text-muted-foreground">
