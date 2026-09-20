@@ -1,16 +1,7 @@
 "use server"
 
 import { sql } from "@/lib/db";
-import { z } from "zod";
-
-const doctorSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    specialty: z.string(),
-
-});
-
-export type Doctor = z.infer<typeof doctorSchema>;
+import { Doctor, doctorSchema } from "@/lib/schemas/doctors";
 
 export async function getDoctors(): Promise<Doctor[]> {
     try {

@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+
+
+export const appointmentStatusEnum = z.enum([
+    "scheduled",
+    "confirmed",
+    "completed",
+    "cancelled",
+    "no_show",
+]);
+
+export type AppointmentStatus = z.infer<typeof appointmentStatusEnum>;
+
 export const appointmentSchema = z.object({
     id: z.number(),
     doctor_id: z.number(),
@@ -10,6 +22,7 @@ export const appointmentSchema = z.object({
     end_time: z.string(),
     notes: z.string().nullable(),
     created_at: z.coerce.date(),
+    status: appointmentStatusEnum.default("scheduled"),
 });
 
 export const createAppointmentSchema = z
@@ -53,3 +66,23 @@ export const createAppointmentSchema = z
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>;
 export type Appointment = z.infer<typeof appointmentSchema>;
+
+
+export const appointmentFiltersSchema = z.object({
+    doctorId: z.coerce.number().int().positive().optional(),
+    status: appointmentStatusEnum.optional(),
+});
+
+export type AppointmentFilters = z.infer<typeof appointmentFiltersSchema>;
+
+export type AppointmentWithDoctor = Appointment & {
+    doctor_name: string;
+    doctor_specialty: string;
+};
+
+export const updateStatusSchema = z.object({
+    id: z.coerce.number().int().positive(),
+    status: appointmentStatusEnum,
+});
+
+export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;

@@ -17,11 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateAppointmentInput, createAppointmentSchema } from "@/lib/schemas/appointments";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Doctor } from "@/actions/doctors";
 // import { Label } from "../ui/label";
 import { createAppointmentAction } from "@/actions/appointments";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { CheckCircleIcon, InfoIcon } from "@phosphor-icons/react";
+import { Doctor } from "@/lib/schemas/doctors";
 
 
 type CreateAppointmentFormProps = {
@@ -74,10 +74,10 @@ export function CreateAppointmentForm({
             {serverError && (
                 <Alert className="mb-4 bg-red-100 text-red-900">
                     <InfoIcon />
-                    <AlertTitle>
+                    {/* <AlertTitle>
                         An error occurred
-                    </AlertTitle>
-                    <AlertDescription>
+                    </AlertTitle> */}
+                    <AlertDescription className="text-xs">
                         {serverError}
                     </AlertDescription>
                 </Alert>
@@ -85,10 +85,10 @@ export function CreateAppointmentForm({
             {successMessage && (
                 <Alert className="mb-4">
                     <CheckCircleIcon />
-                    <AlertTitle>
+                    {/* <AlertTitle>
                         Success!
-                    </AlertTitle>
-                    <AlertDescription>
+                    </AlertTitle> */}
+                    <AlertDescription className="text-xs">
                         {successMessage}
                     </AlertDescription>
                 </Alert>
@@ -144,69 +144,72 @@ export function CreateAppointmentForm({
                         )}
                     />
                 </div>
-                <Controller
-                    name="doctorId"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor={field.name}>
-                                Doctor
-                            </FieldLabel>
+                <div className="grid grid-cols-2 gap-4">
+                    <Controller
+                        name="doctorId"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor={field.name}>
+                                    Doctor
+                                </FieldLabel>
 
-                            <Select
-                                value={field.value != null ? String(field.value) : undefined}
-                                onValueChange={(value) => field.onChange((value))}
-                            >
-                                <SelectTrigger
-                                    id={field.name}
-                                    aria-invalid={fieldState.invalid}
+                                <Select
+                                    value={field.value != null ? String(field.value) : undefined}
+                                    onValueChange={(value) => field.onChange(Number(value))}
                                 >
-                                    <SelectValue placeholder="Select Doctor" >
-                                        {doctors.find((d) => d.id === field.value)?.name}
+                                    <SelectTrigger
+                                        id={field.name}
+                                        aria-invalid={fieldState.invalid}
+                                    >
+                                        <SelectValue placeholder="Select Doctor" >
+                                            {doctors.find((d) => d.id === field.value)?.name}
 
-                                    </SelectValue>
-                                </SelectTrigger>
+                                        </SelectValue>
+                                    </SelectTrigger>
 
-                                <SelectContent>
-                                    {doctors.map((doctor) => (
-                                        <SelectItem
-                                            key={doctor.id}
-                                            value={String(doctor.id)}
-                                        >
-                                            {doctor.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                    <SelectContent>
+                                        {doctors.map((doctor) => (
+                                            <SelectItem
+                                                key={doctor.id}
+                                                value={String(doctor.id)}
+                                            >
+                                                {doctor.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
 
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]} />
-                            )}
-                        </Field>
-                    )}
-                />
-                <Controller
-                    name="appointmentDate"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor={field.name}>
-                                Date
-                            </FieldLabel>
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
+                    <Controller
+                        name="appointmentDate"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor={field.name}>
+                                    Date
+                                </FieldLabel>
 
-                            <Input
-                                {...field}
-                                id={field.name}
-                                type="date"
-                                aria-invalid={fieldState.invalid}
-                            />
+                                <Input
+                                    {...field}
+                                    id={field.name}
+                                    type="date"
+                                    aria-invalid={fieldState.invalid}
+                                />
 
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]} />
-                            )}
-                        </Field>
-                    )}
-                />
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
+                </div>
+
 
                 <div className="grid grid-cols-2 gap-4">
                     <Controller
@@ -270,7 +273,7 @@ export function CreateAppointmentForm({
                                 id={field.name}
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Optional notes about the appointment..."
-                                className="min-h-24 resize-none"
+                                className="resize-none"
                             />
 
                             <FieldDescription>
