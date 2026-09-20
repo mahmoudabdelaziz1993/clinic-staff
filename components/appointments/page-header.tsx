@@ -23,7 +23,7 @@ export default function AppointmentPageHeader({ doctors }: { doctors: Doctor[] }
                 <SheetTrigger render={
                     <Button>
                         <PlusIcon />
-                        Create Appointment
+                        <span className="hidden md:block"> Create Appointment</span>
                     </Button>
                 }></SheetTrigger>
                 <SheetContent>
