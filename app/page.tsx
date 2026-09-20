@@ -1,26 +1,49 @@
-import { Button } from "@/components/ui/button"
-import { getDoctors } from "@/actions/doctors"
+import { getAppointments } from "@/actions/appointments";
+import { getDoctors } from "@/actions/doctors";
+import AppointmentPageHeader from "@/components/appointments/page-header";
+import { AppointmentsTable } from "@/components/appointments/table";
+import AppointmentsTableFilters from "@/components/appointments/table-header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { appointmentStatusEnum } from "@/lib/schemas/appointments";
 
-export default async function Page() {
-  const doctors = await getDoctors();
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    doctor?: string;
+    status?: string;
+  }>;
+}) {
+  const params = await searchParams;
+
+  const doctorId = params.doctor ? Number(params.doctor) : undefined;
+
+  const parsedStatus = appointmentStatusEnum.safeParse(params.status);
+  const status = parsedStatus.success ? parsedStatus.data : undefined;
+
+  const [appointments, doctors] = await Promise.all([
+    getAppointments({ doctorId, status }),
+    getDoctors(),
+  ]);
+
   return (
     <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <ul>
-            {doctors.map((doctor) => (
-              <li key={doctor.id}>{doctor.name}-{doctor.specialty}</li>
-            ))}
-          </ul>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>
+            <AppointmentPageHeader doctors={doctors} />
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AppointmentsTableFilters
+            doctors={doctors}
+            selectedDoctor={doctorId}
+            selectedStatus={status}
+          />
+          <AppointmentsTable appointments={appointments} />
+        </CardContent>
+      </Card>
+
     </div>
   )
 }
